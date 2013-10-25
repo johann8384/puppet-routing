@@ -1,5 +1,5 @@
 name    'johann8384-routing'
-version '0.1.0'
+version '0.1.1'
 source 'https://github.com/johann8384/puppet-routing'
 author 'johann8384'
 license 'Apache License, Version 2.0'

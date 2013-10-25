@@ -42,7 +42,7 @@ class routing::bgpd(
   $lan_description  = 'LAN',
   $lan_cidr         = '192.168.0.0/24',
   $tunnels          = undef,
-) inherits routing::quagga {
+) inherits routing {
   file { '/etc/quagga/bgpd.conf':
     ensure  => present,
     content => template('routing/bgpd.conf.erb'),

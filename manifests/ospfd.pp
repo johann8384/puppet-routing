@@ -40,7 +40,7 @@ class routing::ospfd(
   $lan_description  = 'LAN',
   $lan_cidr         = '192.168.0.0/24',
   $tunnels          = undef,
-) inherits routing::quagga {
+) inherits routing {
   file { '/etc/quagga/ospfd.conf':
     ensure  => present,
     content => template('routing/ospf.conf.erb'),
@@ -48,9 +48,9 @@ class routing::ospfd(
   }
 
   service { 'ospfd':
-    ensure  => running,
-    enable  => true,
-    require => File['/etc/quagga/ospfd.conf'],
+    ensure    => running,
+    enable    => true,
+    require   => File['/etc/quagga/ospfd.conf'],
     subscribe => File['/etc/quagga/ospfd.conf'],
   }
 }
