@@ -1,0 +1,7 @@
+DEVICE=<%= @interface %>
+BOOTPROTO=none
+ONBOOT=<%= @onboot %>
+TYPE=GRE
+PEER_OUTER_IPADDR=<%= @peer %>
+PEER_INNER_IPADDR=<%= @remote %>
+MY_INNER_IPADDR=<%= @local %>

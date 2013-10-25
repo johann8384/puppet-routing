@@ -1,0 +1,42 @@
+hostname <%= @hostname %>
+password <%= has_variable?('password') ?  @password : 'zebra' %>
+router bgp <%= @asn %>
+bgp log-neighbor-changes
+bgp always-compare-med
+redistribute kernel
+redistribute connected
+redistribute static
+network <%= has_variable?('lan_cidr') ?  @lan_cidr : '192.168.10.254/24' %>
+<% @tunnels.each_pair do |interface, tunnel| -%>
+neighbor <%= tunnel['remote'] %> remote-as <%= tunnel['remoteasn'] %>
+neighbor <%= tunnel['remote'] %> distribute-list local_nets in
+<% end -%>
+
+access-list local_nets permit 192.168.0.0/16
+access-list local_nets permit 172.16.0.0/12
+access-list local_nets permit 10.0.0.0/8
+access-list local_nets deny any
+
+ip prefix-list no_local seq 25 permit <%= @lan_cidr %> le 32
+
+ip prefix-list no_multi seq 5 permit 224.0.0.0/4 le 32
+ip prefix-list no_multi seq 10 permit 240.0.0.0/4 le 32
+
+ip as-path access-list with_our_as permit <%= @asn %>
+
+<% @tunnels.each_pair do |interface, tunnel| -%>
+route-map <%= interface %>_in deny 10
+match ip address prefix-list no_local
+
+route-map <%= interface %>_in deny 20
+match ip address prefix-list no_multi
+
+route-map <%= interface %>_in deny 30
+match as-path  with_our_as
+
+route-map <%= interface %>_in permit <%= tunnel['remoteasn'] %>
+set metric 50
+<% end -%>
+
+log stdout
+log file /var/log/quagga/bgpd.log

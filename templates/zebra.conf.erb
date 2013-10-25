@@ -1,0 +1,26 @@
+hostname <%= @hostname %>
+password <%= has_variable?('zebra_password') ?  @zebra_password : 'archipel' %>
+enable password zebra
+!
+! Interface's description.
+!
+interface   <%= has_variable?('lo_interface') ?  @lo_interface : 'lo' %> 
+description <%= has_variable?('lo_description') ?  @lo_description : 'loopback' %>
+ip address  <%= has_variable?('lo_cidr') ?  @lo_cidr : '127.0.0.1/8' %>
+ip forwarding
+
+interface   <%= has_variable?('lan_interface') ?  @lan_interface : 'eth0' %> 
+description <%= has_variable?('lan_description') ?  @lan_description : 'LAN' %>
+ip address  <%= has_variable?('lan_cidr') ?  @lan_cidr : '192.168.10.254/24' %>
+ip forwarding
+
+<% @tunnels.each_pair do |interface, tunnel| -%>
+interface   <%= tunnel['interface'] %>
+description <%= tunnel['description'] %>
+ip address  <%= tunnel['local'] %>/30
+ip forwarding
+
+<% end -%>
+
+log file  <%= has_variable?('log_file') ?  @log_file : '/var/log/quagga/zebra.log' %>
+

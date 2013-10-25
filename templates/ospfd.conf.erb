@@ -1,0 +1,15 @@
+interface <%= has_variable?('lan_interface') ?  @lan_interface : 'eth0' %>
+<% @tunnels.each_pair do |interface, tunnel| -%>
+interface  <%= tunnel['interface'] %>
+<% end -%>
+
+router ospf
+redistribute static
+redistribute connected
+network <%= has_variable?('lan_cidr') ?  @lan_cidr : '192.168.10.254/24' %> area 0
+<% @tunnels.each_pair do |interface, tunnel| -%>
+network <%= tunnel['local'] %>/30 area 0
+<% end -%>
+
+log stdout
+log file  <%= has_variable?('ospf_log_file') ?  @ospf_log_file : '/var/log/quagga/ospf.log' %>
