@@ -18,7 +18,7 @@ Jonathan Creasy <jonathan.creasy@gmail.com>
 Support
 -------
 
-Please log tickets and issues at our [Projects site](http://projects.example.com)
+Please log tickets and issues on the [issues](https://github.com/johann8384/puppet-routing/issues) tab
 
 Examples
 --------
